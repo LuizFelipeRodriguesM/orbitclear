@@ -35,7 +35,7 @@ orbitclear/
 ├── java/             # aplicação Java POO (console)
 ├── banco/            # script .sql do banco de dados
 ├── diagramas/        # diagrama de classes (UML) e ER, em Mermaid
-├── web/              # protótipo HTML/CSS/JS (em breve)
+├── web/              # protótipo HTML/CSS/JS (4 telas)
 └── INTEGRANTES.txt   # equipe + link do vídeo pitch
 ```
 
@@ -60,9 +60,144 @@ O script cria 4 tabelas relacionadas (`cliente_operador`, `operador_missao`, `ob
 
 ## Diagramas
 
-Os diagramas estão em `diagramas/` no formato [Mermaid](https://mermaid.live) (`.mmd`):
-- `diagrama-classes.mmd` — diagrama de classes (UML)
-- `modelo-er.mmd` — diagrama entidade-relacionamento
+> Renderizam automaticamente aqui no GitHub. Fontes em `diagramas/*.mmd`.
+
+### Diagrama de Classes (UML)
+
+```mermaid
+classDiagram
+    class ClienteOperador {
+        +int id
+        +String nomeAgencia
+        +String paisOrigem
+        +String contatoEmail
+    }
+    class ObjetoOrbital {
+        +int id
+        +String nome
+        +TipoObjeto tipo
+        +int altitudeKm
+        +double massaKg
+        +NivelRisco nivelRiscoColisao
+        +StatusRemocao statusRemocao
+        +ClienteOperador dono
+        +String impactoNaTerra()
+    }
+    class OperadorMissao {
+        +int id
+        +String nomeEmpresa
+        +String pais
+        +TecnologiaCaptura tecnologiaCaptura
+        +double capacidadeKgPorMissao
+        +double precoBaseUSD
+    }
+    class ContratoRemocao {
+        +int id
+        +ObjetoOrbital objeto
+        +OperadorMissao operador
+        +LocalDate dataJanela
+        +double valorUSD
+        +StatusContrato status
+    }
+    class OrbitClearService {
+        -List~ClienteOperador~ clientes
+        -List~ObjetoOrbital~ objetos
+        -List~OperadorMissao~ operadores
+        -List~ContratoRemocao~ contratos
+        +cadastrarObjeto(...) ObjetoOrbital
+        +listarObjetos() List
+        +buscarObjetoPorId(int) ObjetoOrbital
+        +atualizarStatusObjeto(int, StatusRemocao) boolean
+        +agendarContrato(int, int, LocalDate, double) ContratoRemocao
+        +concluirContrato(int) boolean
+    }
+    class TipoObjeto {
+        <<enumeration>>
+        SATELITE_MORTO
+        ESTAGIO_FOGUETE
+        FRAGMENTO
+    }
+    class NivelRisco {
+        <<enumeration>>
+        BAIXO
+        MEDIO
+        ALTO
+        CRITICO
+    }
+    class StatusRemocao {
+        <<enumeration>>
+        CATALOGADO
+        EM_NEGOCIACAO
+        AGENDADO
+        REMOVIDO
+    }
+    class StatusContrato {
+        <<enumeration>>
+        PROPOSTO
+        AGENDADO
+        CONCLUIDO
+        CANCELADO
+    }
+    class TecnologiaCaptura {
+        <<enumeration>>
+        ARPAO
+        REDE
+        BRACO_ROBOTICO
+        LASER
+    }
+    ClienteOperador "1" --> "N" ObjetoOrbital : possui
+    ObjetoOrbital "1" --> "N" ContratoRemocao : alvo de
+    OperadorMissao "1" --> "N" ContratoRemocao : executa
+    OrbitClearService --> ObjetoOrbital : gerencia
+    OrbitClearService --> OperadorMissao : gerencia
+    OrbitClearService --> ClienteOperador : gerencia
+    OrbitClearService --> ContratoRemocao : gerencia
+```
+
+### Diagrama Entidade-Relacionamento (ER)
+
+4 tabelas, 3 relacionamentos. `contrato_remocao` é a tabela associativa (N:N) entre objeto e operador.
+
+```mermaid
+erDiagram
+    cliente_operador ||--o{ objeto_orbital : possui
+    objeto_orbital   ||--o{ contrato_remocao : "alvo de"
+    operador_missao  ||--o{ contrato_remocao : executa
+
+    cliente_operador {
+        INT id PK
+        VARCHAR nome_agencia "NOT NULL"
+        VARCHAR pais_origem
+        VARCHAR contato_email
+    }
+    operador_missao {
+        INT id PK
+        VARCHAR nome_empresa "NOT NULL"
+        VARCHAR pais
+        VARCHAR tecnologia_captura "ARPAO | REDE | BRACO_ROBOTICO | LASER"
+        DECIMAL capacidade_kg_por_missao
+        DECIMAL preco_base_usd
+    }
+    objeto_orbital {
+        INT id PK
+        VARCHAR nome "NOT NULL"
+        VARCHAR tipo "SATELITE_MORTO | ESTAGIO_FOGUETE | FRAGMENTO"
+        INT altitude_km
+        DECIMAL massa_kg
+        VARCHAR nivel_risco_colisao "BAIXO | MEDIO | ALTO | CRITICO"
+        VARCHAR impacto_terra "selo Impacto na Terra"
+        VARCHAR status_remocao "CATALOGADO | EM_NEGOCIACAO | AGENDADO | REMOVIDO"
+        INT cliente_id FK
+    }
+    contrato_remocao {
+        INT id PK
+        INT objeto_orbital_id FK "NOT NULL"
+        INT operador_missao_id FK "NOT NULL"
+        DATE data_janela
+        DECIMAL valor_usd
+        VARCHAR status "PROPOSTO | AGENDADO | CONCLUIDO | CANCELADO"
+    }
+```
 
 ## Equipe — Grupo 89
 
