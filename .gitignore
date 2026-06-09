@@ -1,0 +1,14 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.jar
+
+# Logs / temporários
+*.log
+*.tmp
+
+# Dependências (caso a web use no futuro)
+node_modules/

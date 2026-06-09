@@ -1,0 +1,49 @@
+%% OrbitClear - ER - Grupo 89
+%% Modelo de dados do marketplace de remocao de lixo espacial
+%% Visualizar em https://mermaid.live
+%% 4 tabelas, 3 relacionamentos:
+%%   cliente_operador 1:N objeto_orbital
+%%   objeto_orbital   1:N contrato_remocao
+%%   operador_missao  1:N contrato_remocao
+%% contrato_remocao e a tabela associativa (N:N) entre objeto e operador.
+erDiagram
+    cliente_operador ||--o{ objeto_orbital : possui
+    objeto_orbital   ||--o{ contrato_remocao : "alvo de"
+    operador_missao  ||--o{ contrato_remocao : executa
+
+    cliente_operador {
+        INT id PK
+        VARCHAR nome_agencia "NOT NULL"
+        VARCHAR pais_origem
+        VARCHAR contato_email
+    }
+
+    operador_missao {
+        INT id PK
+        VARCHAR nome_empresa "NOT NULL"
+        VARCHAR pais
+        VARCHAR tecnologia_captura "ARPAO | REDE | BRACO_ROBOTICO | LASER"
+        DECIMAL capacidade_kg_por_missao
+        DECIMAL preco_base_usd
+    }
+
+    objeto_orbital {
+        INT id PK
+        VARCHAR nome "NOT NULL"
+        VARCHAR tipo "SATELITE_MORTO | ESTAGIO_FOGUETE | FRAGMENTO"
+        INT altitude_km
+        DECIMAL massa_kg
+        VARCHAR nivel_risco_colisao "BAIXO | MEDIO | ALTO | CRITICO"
+        VARCHAR impacto_terra "selo Impacto na Terra (texto derivado do nivel_risco_colisao)"
+        VARCHAR status_remocao "CATALOGADO | EM_NEGOCIACAO | AGENDADO | REMOVIDO"
+        INT cliente_id FK
+    }
+
+    contrato_remocao {
+        INT id PK
+        INT objeto_orbital_id FK "NOT NULL"
+        INT operador_missao_id FK "NOT NULL"
+        DATE data_janela
+        DECIMAL valor_usd
+        VARCHAR status "PROPOSTO | AGENDADO | CONCLUIDO | CANCELADO"
+    }
