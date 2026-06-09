@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Janelas de desórbita · OrbitClear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  /* ============================================================
+     OrbitClear — INTERNA: CONTRATOS (tela transacional)
+     Mesma pele da landing (Bricolage display, paleta estrita por
+     token, profundidade por degrau de cor, ember só em dado real).
+     Sóbria e funcional — sem bento/marquee. Prefixo .ct- / .ed-.
+     ============================================================ */
+
+  /* gutter editorial largo: mesmo eixo da landing */
+  .ed-bleed { padding-inline: clamp(20px, 5.5vw, 96px); }
+
+  /* ---- HEADER DE PÁGINA (idêntico nas 3 internas) ---- */
+  .pg-head { padding-block: clamp(40px, 6vw, 84px) clamp(22px, 3vw, 40px); display: grid; gap: clamp(12px,1.4vw,16px); }
+  .pg-head .pg-eyebrow { font-size: var(--text-caption); letter-spacing: .2em; text-transform: uppercase; font-weight: 600; color: var(--color-steel); }
+  .pg-title { margin: 0; font-family: 'Bricolage Grotesque','DM Sans',sans-serif; font-weight: 800;
+    font-size: clamp(34px, 5vw, 58px); line-height: 1.0; letter-spacing: -.03em; color: var(--color-obsidian); }
+  .pg-sub { margin: 0; max-width: 56ch; font-size: var(--text-body-lg); line-height: var(--leading-body-lg); color: var(--color-steel); }
+  .pg-count { justify-self: start; }
+
+  /* ============================================================
+     LAYOUT — duas colunas: lista de contratos | painel de agendar
+     ============================================================ */
+  .ct-layout {
+    padding-bottom: clamp(56px, 8vw, 104px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 48px);
+    align-items: start;
+  }
+  @media (max-width: 940px) {
+    .ct-layout { grid-template-columns: 1fr; gap: clamp(28px, 5vw, 40px); }
+  }
+
+  /* rótulo de seção curtinho acima de cada bloco */
+  .ct-seclabel {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--spacing-16);
+    margin-bottom: clamp(12px, 1.4vw, 18px);
+  }
+  .ct-seclabel .ed-kicker {
+    font-size: var(--text-caption); letter-spacing: .2em; text-transform: uppercase;
+    font-weight: var(--font-weight-semibold); color: var(--color-steel);
+  }
+  .ct-seclabel .ct-tally {
+    font-size: var(--text-body); font-weight: var(--font-weight-medium);
+    color: var(--color-steel); font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* ============================================================
+     LISTA DE CONTRATOS — linhas editoriais com hairlines
+     ============================================================ */
+  .ct-list { list-style: none; margin: 0; padding: 0; }
+  .ct-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: clamp(16px, 2.4vw, 40px);
+    padding-block: clamp(18px, 2.1vw, 26px);
+    border-top: 1px solid var(--color-pebble);
+    transition: padding-left .3s cubic-bezier(.175,.885,.32,1.275);
+  }
+  .ct-row:last-child { border-bottom: 1px solid var(--color-pebble); }
+  .ct-row:hover { padding-left: clamp(8px, 1.2vw, 18px); }
+
+  .ct-row-main { min-width: 0; display: grid; gap: 6px; }
+  .ct-obj {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: clamp(19px, 2.1vw, 26px);
+    line-height: 1.16; letter-spacing: -.02em;
+    font-weight: var(--font-weight-bold); color: var(--color-obsidian);
+  }
+  .ct-obj .ct-no {
+    flex: none; font-size: var(--text-body); font-weight: var(--font-weight-medium);
+    color: var(--color-steel); font-variant-numeric: tabular-nums;
+  }
+  .ct-obj .ct-name { overflow-wrap: anywhere; }
+  .ct-meta {
+    font-size: var(--text-body); line-height: var(--leading-body); color: var(--color-steel);
+    display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline;
+  }
+  .ct-meta b { color: var(--color-ink); font-weight: var(--font-weight-semibold); }
+  .ct-meta .ct-dot { color: var(--color-pebble); }
+
+  .ct-row-side {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px; text-align: right;
+  }
+  .ct-value {
+    font-family: 'Bricolage Grotesque','DM Sans',sans-serif;
+    font-size: clamp(22px, 2.4vw, 30px); font-weight: 700;
+    letter-spacing: -.03em; line-height: 1; color: var(--color-obsidian);
+    font-variant-numeric: tabular-nums;
+  }
+  /* badge de status do contrato — sóbrio; ember só p/ objeto de risco CRÍTICO */
+  .ct-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: var(--text-caption); font-weight: var(--font-weight-semibold);
+    letter-spacing: .06em; text-transform: uppercase;
+    padding: 5px 11px; border-radius: var(--radius-pill);
+    border: 1px solid var(--color-pebble); color: var(--color-slate);
+    white-space: nowrap;
+  }
+  .ct-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+  .ct-status[data-status="PROPOSTO"]  { color: var(--color-steel); }
+  .ct-status[data-status="AGENDADO"]  { color: var(--color-obsidian); border-color: var(--color-graphite); }
+  .ct-status[data-status="CONCLUIDO"] { color: var(--color-snow); background: var(--color-obsidian); border-color: var(--color-obsidian); }
+  .ct-status[data-status="CANCELADO"] { color: var(--color-ash); }
+  /* selo de alerta: ember só quando o objeto do contrato é risco CRÍTICO (dado real) */
+  .ct-crit {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: var(--text-caption); font-weight: var(--font-weight-semibold);
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--color-ember);
+  }
+  .ct-crit::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-ember); flex: none; }
+
+  .ct-empty {
+    border-top: 1px solid var(--color-pebble); border-bottom: 1px solid var(--color-pebble);
+    padding-block: clamp(28px, 4vw, 44px);
+    color: var(--color-steel); font-size: var(--text-body-lg); line-height: var(--leading-body-lg);
+  }
+
+  /* linha recém-criada entrando na lista */
+  .ct-enter { animation: ctIn .42s cubic-bezier(.175,.885,.32,1.275) both; }
+  @keyframes ctIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+  /* ============================================================
+     PAINEL "AGENDAR" — card branco premium (sticky no desktop)
+     ============================================================ */
+  .ct-panel {
+    background: var(--surface-card-white);
+    border-radius: clamp(28px, 2.4vw, 36px);
+    padding: clamp(24px, 2.6vw, 36px);
+    position: sticky; top: calc(64px + clamp(16px, 2vw, 28px));
+  }
+  @media (max-width: 940px) { .ct-panel { position: static; } }
+
+  .ct-panel-eyebrow {
+    font-size: var(--text-caption); letter-spacing: .2em; text-transform: uppercase;
+    font-weight: var(--font-weight-semibold); color: var(--color-steel);
+  }
+  .ct-panel-title {
+    margin: 8px 0 0;
+    font-family: 'Bricolage Grotesque','DM Sans',sans-serif; font-weight: 800;
+    font-size: clamp(22px, 2.6vw, 30px); line-height: 1.04; letter-spacing: -.025em;
+    color: var(--color-obsidian);
+  }
+  .ct-panel-sub {
+    margin: 8px 0 clamp(20px, 2.2vw, 26px);
+    font-size: var(--text-body); line-height: var(--leading-body); color: var(--color-steel); max-width: 40ch;
+  }
+
+  .ct-form { display: grid; gap: clamp(14px, 1.6vw, 18px); }
+  .ct-field { display: grid; gap: 7px; }
+  .ct-label {
+    font-size: var(--text-body); font-weight: var(--font-weight-medium); color: var(--color-ink);
+  }
+
+  /* inputs/selects consistentes: radius 14px, borda pebble, foco graphite */
+  .ct-control {
+    width: 100%; background: var(--color-snow); color: var(--color-ink);
+    border: 1px solid var(--color-pebble); border-radius: var(--radius-input);
+    padding: var(--spacing-12) var(--spacing-16); font: inherit; line-height: 1.4;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .ct-control::placeholder { color: var(--color-ash); }
+  .ct-control:hover { border-color: var(--color-ash); }
+  .ct-control:focus {
+    outline: none; border-color: var(--color-graphite);
+    box-shadow: 0 0 0 3px var(--color-fog);
+  }
+  /* seta custom nos selects (sem depender da nativa) */
+  select.ct-control {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    padding-right: 42px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%2352525b' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center;
+  }
+
+  /* campo de valor (read-only): vira display forte, não parece editável */
+  .ct-valuefield {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--spacing-12);
+    background: var(--surface-canvas); border: 1px solid var(--color-fog);
+    border-radius: var(--radius-input); padding: var(--spacing-12) var(--spacing-16);
+  }
+  .ct-valuefield .ct-vk { font-size: var(--text-caption); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--color-steel); font-weight: var(--font-weight-semibold); }
+  .ct-valuefield .ct-vv {
+    font-family: 'Bricolage Grotesque','DM Sans',sans-serif;
+    font-size: clamp(20px, 2.2vw, 26px); font-weight: 700; letter-spacing: -.025em;
+    color: var(--color-obsidian); line-height: 1; font-variant-numeric: tabular-nums;
+  }
+
+  .ct-submit { margin-top: clamp(4px, .6vw, 8px); }
+
+  /* feedback efêmero após agendar */
+  .ct-feedback {
+    display: flex; gap: var(--spacing-8); align-items: center;
+    font-size: var(--text-body); line-height: var(--leading-body); color: var(--color-ink);
+  }
+  .ct-feedback::before { content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--color-ember); flex: none; box-shadow: 0 0 0 4px rgba(255,90,0,.16); }
+
+  /* ---- responsivo fino ---- */
+  @media (max-width: 460px) {
+    .ct-row { grid-template-columns: 1fr; align-items: start; gap: 12px; }
+    .ct-row-side { align-items: flex-start; text-align: left; flex-direction: row; flex-wrap: wrap; gap: 10px 14px; }
+  }
+
+  /* ---- motion reset ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .ct-row { transition: none; }
+    .ct-row:hover { padding-left: 0; }
+    .ct-enter { animation: none; }
+    .ct-control { transition: none; }
+  }
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a href="index.html" class="brand"><span class="brand-dot"></span>OrbitClear</a><nav class="nav-links"><a href="objetos.html" class="nav-link">Objetos</a><a href="operadores.html" class="nav-link">Operadores</a><a href="contratos.html" class="nav-link is-active">Contratos</a><a href="contratos.html" class="btn btn-primary">Agendar remoção</a></nav></div></header>
+
+<main>
+
+  <!-- ===================== HEADER EDITORIAL ===================== -->
+  <section class="pg-head ed-bleed">
+    <span class="pg-eyebrow">Contratos · simulação</span>
+    <h1 class="pg-title">Janelas de desórbita</h1>
+    <p class="pg-sub">Acompanhe os contratos agendados e crie uma nova remoção.</p>
+  </section>
+
+  <!-- ===================== CORPO: LISTA + AGENDAR ===================== -->
+  <section class="ct-layout ed-bleed">
+
+    <!-- LISTA DE CONTRATOS -->
+    <div>
+      <div class="ct-seclabel">
+        <span class="ed-kicker">Contratos agendados</span>
+        <span class="ct-tally" id="ct-tally">0 contratos</span>
+      </div>
+      <ul class="ct-list" id="lista" aria-live="polite"></ul>
+    </div>
+
+    <!-- PAINEL DE AGENDAMENTO -->
+    <aside class="ct-panel" aria-labelledby="ct-panel-h">
+      <span class="ct-panel-eyebrow">Nova remoção</span>
+      <h2 class="ct-panel-title" id="ct-panel-h">Agendar uma janela</h2>
+      <p class="ct-panel-sub">Escolha o detrito, o operador de captura e a data. O valor segue o preço-base do operador.</p>
+
+      <form id="form-contrato" class="ct-form" novalidate>
+        <div class="ct-field">
+          <label class="ct-label" for="sel-objeto">Objeto orbital</label>
+          <select class="ct-control" id="sel-objeto" name="objeto" required></select>
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="sel-operador">Operador de missão</label>
+          <select class="ct-control" id="sel-operador" name="operador" required></select>
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="inp-janela">Janela de desórbita</label>
+          <input class="ct-control" id="inp-janela" name="janela" type="date" required>
+        </div>
+
+        <div class="ct-field">
+          <label class="ct-label" for="inp-valor">Valor estimado (USD)</label>
+          <div class="ct-valuefield">
+            <span class="ct-vk" aria-hidden="true">USD</span>
+            <span class="ct-vv" id="ct-valor-display">—</span>
+            <input id="inp-valor" name="valor" type="hidden" readonly aria-readonly="true">
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg btn-block ct-submit" type="submit">Agendar remoção</button>
+        <p class="ct-feedback" id="feedback" role="status" hidden></p>
+      </form>
+    </aside>
+
+  </section>
+
+</main>
+
+<footer class="footer container"><span>OrbitClear · Marketplace de remoção de lixo espacial</span><span class="muted">Global Solution 2026/1 · FIAP Eng. de Software · Grupo 89</span></footer>
+
+<script src="js/data.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    var lista       = document.getElementById('lista');
+    var tally       = document.getElementById('ct-tally');
+    var form        = document.getElementById('form-contrato');
+    var selObjeto   = document.getElementById('sel-objeto');
+    var selOperador = document.getElementById('sel-operador');
+    var inpJanela   = document.getElementById('inp-janela');
+    var inpValor    = document.getElementById('inp-valor');
+    var valorDisplay= document.getElementById('ct-valor-display');
+    var feedback    = document.getElementById('feedback');
+    var submitBtn   = form.querySelector('button[type="submit"]');
+
+    var L = window.LABELS || {};
+
+    // numeração editorial (mais recente = 01), em 2 dígitos
+    function ord(n) { return n < 10 ? '0' + n : '' + n; }
+
+    // markup interno de uma linha de contrato
+    // (objeto pode ter saído do catálogo -> fallbacks seguros)
+    function rowHTML(contrato, numero) {
+      var objeto      = window.objetoPorId(contrato.objetoOrbitalId);
+      var operador    = window.operadorPorId(contrato.operadorMissaoId);
+      var nomeObjeto  = objeto ? objeto.nome : 'Objeto #' + contrato.objetoOrbitalId;
+      var nomeOperador= operador ? operador.nomeEmpresa : '—';
+      var statusLabel = (L.contrato && L.contrato[contrato.status]) || contrato.status;
+      var isCritico   = objeto && objeto.nivelRiscoColisao === 'CRITICO';
+
+      var critSelo = isCritico
+        ? '<span class="ct-crit" title="Objeto de risco crítico">Risco crítico</span>'
+        : '';
+
+      return ''
+        + '<div class="ct-row-main">'
+        +   '<p class="ct-obj"><span class="ct-no">' + ord(numero) + '</span>'
+        +     '<span class="ct-name">' + nomeObjeto + '</span></p>'
+        +   '<p class="ct-meta">'
+        +     'Operador <b>' + nomeOperador + '</b>'
+        +     '<span class="ct-dot" aria-hidden="true">·</span>'
+        +     'Janela <b>' + contrato.dataJanela + '</b>'
+        +   '</p>'
+        + '</div>'
+        + '<div class="ct-row-side">'
+        +   '<span class="ct-value">' + window.fmtUSD(contrato.valorUSD) + '</span>'
+        +   critSelo
+        +   '<span class="ct-status" data-status="' + contrato.status + '">' + statusLabel + '</span>'
+        + '</div>';
+    }
+
+    function buildRow(contrato, numero) {
+      var el = document.createElement('li');
+      el.className = 'ct-row';
+      el.innerHTML = rowHTML(contrato, numero);
+      return el;
+    }
+
+    function atualizarTally() {
+      var n = window.CONTRATOS.length;
+      tally.textContent = n + (n === 1 ? ' contrato' : ' contratos');
+    }
+
+    function renderLista() {
+      lista.innerHTML = '';
+      if (!window.CONTRATOS.length) {
+        var vazio = document.createElement('li');
+        vazio.className = 'ct-empty';
+        vazio.textContent = 'Nenhum contrato agendado ainda. Crie a primeira janela de desórbita ao lado.';
+        lista.appendChild(vazio);
+        atualizarTally();
+        return;
+      }
+      window.CONTRATOS.forEach(function (c, i) {
+        lista.appendChild(buildRow(c, i + 1));
+      });
+      atualizarTally();
+    }
+
+    function popularSelects() {
+      selObjeto.innerHTML = window.OBJETOS
+        .map(function (o) {
+          var tipo = (L.tipo && L.tipo[o.tipo]) || o.tipo;
+          return '<option value="' + o.id + '">' + o.nome + ' — ' + tipo + '</option>';
+        })
+        .join('');
+      selOperador.innerHTML = window.OPERADORES
+        .map(function (o) {
+          return '<option value="' + o.id + '">' + o.nomeEmpresa + ' (' + o.pais + ')</option>';
+        })
+        .join('');
+    }
+
+    // espelha o preço-base do operador selecionado no campo de valor (read-only)
+    function atualizarValor() {
+      var operador = window.operadorPorId(Number(selOperador.value));
+      if (operador) {
+        inpValor.value = String(operador.precoBaseUSD);
+        valorDisplay.textContent = window.fmtUSD(operador.precoBaseUSD).replace(/^\$/, '');
+      } else {
+        inpValor.value = '';
+        valorDisplay.textContent = '—';
+      }
+    }
+
+    selOperador.addEventListener('change', atualizarValor);
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!selObjeto.value || !selOperador.value || !inpJanela.value) {
+        // deixa o browser sinalizar o campo faltante
+        if (form.reportValidity) form.reportValidity();
+        return;
+      }
+
+      var operador = window.operadorPorId(Number(selOperador.value));
+      var novoContrato = {
+        id: window.CONTRATOS.length + 1,
+        objetoOrbitalId: Number(selObjeto.value),
+        operadorMissaoId: Number(selOperador.value),
+        dataJanela: inpJanela.value,
+        valorUSD: operador ? operador.precoBaseUSD : 0,
+        status: 'PROPOSTO'
+      };
+
+      // simulação em memória — sem persistência. prepend no array global.
+      window.CONTRATOS.unshift(novoContrato);
+
+      // re-render: renumera tudo (01 = mais recente) e anima a nova linha
+      renderLista();
+      if (lista.firstChild && lista.firstChild.classList) {
+        lista.firstChild.classList.add('ct-enter');
+      }
+
+      // feedback efêmero
+      var objeto = window.objetoPorId(novoContrato.objetoOrbitalId);
+      feedback.hidden = false;
+      feedback.textContent = 'Contrato proposto para ' + (objeto ? objeto.nome : 'o objeto selecionado') + '.';
+
+      var textoOriginal = submitBtn.textContent;
+      submitBtn.textContent = 'Agendado ✓';
+      submitBtn.disabled = true;
+      setTimeout(function () {
+        submitBtn.textContent = textoOriginal;
+        submitBtn.disabled = false;
+      }, 1600);
+
+      // reseta o form mas mantém o valor coerente com o operador padrão
+      form.reset();
+      atualizarValor();
+    });
+
+    // init
+    popularSelects();
+    atualizarValor();
+    renderLista();
+  })();
+</script>
+</body>
+</html>

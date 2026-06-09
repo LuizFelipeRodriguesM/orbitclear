@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operadores · OrbitClear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  /* ============================================================
+     operadores.html — mesma pele editorial da landing.
+     Prefixo .op- pra não colidir com base.css. ZERO rosa:
+     único acento é o ember (#ff5a00), pontual e ligado a dado real.
+     Profundidade por degrau de cor (mist/snow/fog/obsidian),
+     sem drop shadow em card. Hover overshoot igual aos tiles.
+     ============================================================ */
+
+  /* gutter editorial largo (mesmo eixo do .container, sem cartão) */
+  .ed-bleed { padding-inline: clamp(20px, 5.5vw, 96px); }
+
+  /* ---------- HEADER editorial (contrato comum das internas) ---------- */
+  .pg-head { padding-block: clamp(40px, 6vw, 84px) clamp(22px, 3vw, 40px); display: grid; gap: clamp(12px,1.4vw,16px); }
+  .pg-head .pg-eyebrow { font-size: var(--text-caption); letter-spacing: .2em; text-transform: uppercase; font-weight: 600; color: var(--color-steel); }
+  .pg-title { margin: 0; font-family: 'Bricolage Grotesque','DM Sans',sans-serif; font-weight: 800;
+    font-size: clamp(34px, 5vw, 58px); line-height: 1.0; letter-spacing: -.03em; color: var(--color-obsidian); }
+  .pg-sub { margin: 0; max-width: 56ch; font-size: var(--text-body-lg); line-height: var(--leading-body-lg); color: var(--color-steel); }
+  .pg-count { justify-self: start; }
+
+  /* contador-resumo em pílula (mesma linguagem dos badges) */
+  .op-count {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: clamp(4px, .8vw, 8px);
+    padding: 8px 14px;
+    border: 1px solid var(--color-pebble);
+    border-radius: var(--radius-pill);
+    background: var(--surface-card-white);
+    font-size: var(--text-body);
+    color: var(--color-steel);
+    font-variant-numeric: tabular-nums;
+  }
+  .op-count b { color: var(--color-obsidian); font-weight: var(--font-weight-semibold); }
+  .op-count .op-count-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-ember); flex: none; }
+
+  /* ---------- GRID de operadores ---------- */
+  .op-section { padding-bottom: clamp(56px, 8vw, 104px); }
+  .op-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(14px, 1.4vw, 22px);
+  }
+  @media (max-width: 980px) { .op-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .op-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- CARD de operador ---------- */
+  .op-card {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--surface-card-white);
+    border-radius: clamp(28px, 2.4vw, 36px);
+    padding: clamp(22px, 2vw, 30px);
+    min-height: 340px;
+    isolation: isolate;
+    transition: transform .25s cubic-bezier(.175,.885,.32,1.275);
+    will-change: transform;
+  }
+  .op-card:hover { transform: translateY(-4px); }
+
+  /* topo: nome da empresa + país em pílula outline */
+  .op-card-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: var(--spacing-12);
+  }
+  .op-name {
+    margin: 0;
+    font-family: 'Bricolage Grotesque','DM Sans',sans-serif;
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(20px, 1.8vw, 24px);
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    color: var(--color-obsidian);
+  }
+  .op-pais { flex: none; }
+
+  /* badge de tecnologia (soft) + selo ember opcional de destaque */
+  .op-meta-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-8);
+    margin-top: clamp(14px, 1.6vw, 18px);
+  }
+  .op-tech { white-space: nowrap; }
+  /* selo ember — acento ÚNICO, ligado a dado real (maior capacidade) */
+  .op-flag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: var(--text-caption);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: .04em; text-transform: uppercase;
+    color: var(--color-ember);
+    border: 1px solid rgba(255,90,0,.34);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+    background: rgba(255,90,0,.05);
+  }
+  .op-flag::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--color-ember); flex: none; }
+
+  /* spec de capacidade */
+  .op-spec {
+    margin-top: clamp(16px, 1.8vw, 20px);
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-steel);
+  }
+  .op-spec b { color: var(--color-ink); font-weight: var(--font-weight-semibold); }
+
+  /* bloco de preço — empurrado pro fim, separado por filete */
+  .op-price {
+    margin-top: auto;
+    padding-top: clamp(18px, 2vw, 22px);
+    border-top: 1px solid var(--color-fog);
+  }
+  .op-price-num {
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(34px, 3.4vw, 46px);
+    line-height: .9;
+    letter-spacing: -.035em;
+    color: var(--color-obsidian);
+    font-variant-numeric: tabular-nums;
+  }
+  .op-price-label {
+    margin-top: var(--spacing-8);
+    font-size: var(--text-caption);
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--color-steel);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* CTA full-width */
+  .op-cta {
+    margin-top: clamp(18px, 2vw, 22px);
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%;
+  }
+  .op-cta svg { width: 16px; height: 16px; transition: transform .25s cubic-bezier(.175,.885,.32,1.275); }
+  .op-cta:hover svg { transform: translateX(4px); }
+
+  /* ---------- CARD decorativo (ex-orchid → OBSIDIAN, zero rosa) ---------- */
+  .op-join {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    gap: clamp(10px, 1.2vw, 14px);
+    background: var(--surface-dark);
+    color: var(--color-snow);
+    border-radius: clamp(28px, 2.4vw, 36px);
+    padding: clamp(26px, 2.4vw, 34px);
+    min-height: 340px;
+    isolation: isolate;
+    transition: transform .25s cubic-bezier(.175,.885,.32,1.275);
+    will-change: transform;
+  }
+  .op-join:hover { transform: translateY(-4px); }
+  /* brilho ember sutil no canto — mesmo gesto dos blocos escuros da landing */
+  .op-join::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 110% at 88% 6%, rgba(255,90,0,.12), transparent 48%);
+    z-index: -1;
+  }
+  .op-join-eyebrow {
+    font-size: var(--text-caption); letter-spacing: .2em; text-transform: uppercase;
+    font-weight: var(--font-weight-semibold); color: var(--color-ash);
+  }
+  .op-join-title {
+    margin: 0;
+    font-family: 'Bricolage Grotesque','DM Sans',sans-serif;
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(24px, 2.6vw, 32px);
+    line-height: 1.04;
+    letter-spacing: -.02em;
+    color: var(--color-snow);
+  }
+  .op-join-sub {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-pebble);
+    max-width: 32ch;
+  }
+  .op-join-cta {
+    margin-top: clamp(6px, .8vw, 10px);
+    display: inline-flex; align-items: center; gap: 9px;
+    align-self: start;
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-snow);
+  }
+  .op-join-cta .op-ul { border-bottom: 1px solid rgba(255,255,255,.5); padding-bottom: 3px; }
+  .op-join-cta .op-arrow { display: inline-block; transition: transform .28s cubic-bezier(.175,.885,.32,1.275); }
+  .op-join-cta:hover .op-arrow { transform: translateX(6px); }
+
+  /* ---------- motion reset ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .op-card, .op-join, .op-cta svg, .op-join-cta .op-arrow { transition: none; }
+    .op-card:hover, .op-join:hover { transform: none; }
+    .op-cta:hover svg, .op-join-cta:hover .op-arrow { transform: none; }
+  }
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a href="index.html" class="brand"><span class="brand-dot"></span>OrbitClear</a><nav class="nav-links"><a href="objetos.html" class="nav-link">Objetos</a><a href="operadores.html" class="nav-link is-active">Operadores</a><a href="contratos.html" class="nav-link">Contratos</a><a href="contratos.html" class="btn btn-primary">Agendar remoção</a></nav></div></header>
+
+<main>
+
+  <!-- ===================== HEADER editorial ===================== -->
+  <section class="pg-head ed-bleed" aria-labelledby="op-h">
+    <span class="pg-eyebrow">Operadores · simulação</span>
+    <h1 class="pg-title" id="op-h">Quem tira o lixo da órbita</h1>
+    <p class="pg-sub">Empresas de captura de detritos. Compare tecnologia, capacidade e preço.</p>
+    <span class="op-count pg-count">
+      <span class="op-count-dot" aria-hidden="true"></span>
+      <span><b id="op-total">5</b> operadores conectados</span>
+    </span>
+  </section>
+
+  <!-- ===================== GRID de operadores ===================== -->
+  <section class="op-section ed-bleed" aria-label="Operadores de captura disponíveis">
+    <div id="op-grid" class="op-grid"><!-- preenchido via JS --></div>
+  </section>
+
+</main>
+
+<footer class="footer container"><span>OrbitClear · Marketplace de remoção de lixo espacial</span><span class="muted">Global Solution 2026/1 · FIAP Eng. de Software · Grupo 89</span></footer>
+
+<script src="js/data.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    var grid = document.getElementById('op-grid');
+    var ops = window.OPERADORES || [];
+    var L = window.LABELS || {};
+    var fmtKg = window.fmtKg || function (v) { return v + ' kg'; };
+    var fmtUSD = window.fmtUSD || function (v) { return '$' + v; };
+
+    // contador real no header
+    var total = document.getElementById('op-total');
+    if (total) total.textContent = ops.length;
+
+    // acento ember pontual e ligado a dado REAL: a maior capacidade por missão
+    var maxCap = ops.reduce(function (m, o) { return Math.max(m, o.capacidadeKgPorMissao || 0); }, 0);
+
+    var arrowSvg =
+      '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+      '<path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    if (grid) {
+      var cards = ops.map(function (op) {
+        var tech = (L.tecnologia && L.tecnologia[op.tecnologiaCaptura]) || op.tecnologiaCaptura;
+        var isTop = op.capacidadeKgPorMissao === maxCap && maxCap > 0;
+
+        var flag = isTop
+          ? '<span class="op-flag">Maior capacidade</span>'
+          : '';
+
+        return '' +
+          '<article class="op-card">' +
+            '<div class="op-card-head">' +
+              '<h2 class="op-name">' + op.nomeEmpresa + '</h2>' +
+              '<span class="badge badge-line op-pais">' + op.pais + '</span>' +
+            '</div>' +
+            '<div class="op-meta-row">' +
+              '<span class="badge badge-soft op-tech">' + tech + '</span>' +
+              flag +
+            '</div>' +
+            '<p class="op-spec">Capacidade <b>' + fmtKg(op.capacidadeKgPorMissao) + '</b> por missão</p>' +
+            '<div class="op-price">' +
+              '<div class="op-price-num">' + fmtUSD(op.precoBaseUSD) + '</div>' +
+              '<div class="op-price-label">preço base por missão</div>' +
+            '</div>' +
+            '<a class="btn btn-primary op-cta" href="contratos.html">Contratar operador' + arrowSvg + '</a>' +
+          '</article>';
+      });
+
+      // card decorativo OBSIDIAN (ex-orchid) — zero rosa, acento só ember sutil
+      cards.push('' +
+        '<article class="op-join">' +
+          '<span class="op-join-eyebrow">Operador parceiro</span>' +
+          '<h2 class="op-join-title">Sua frota também pode limpar a órbita</h2>' +
+          '<p class="op-join-sub">Cadastre sua tecnologia de captura e entre no marketplace de desórbita.</p>' +
+          '<a class="op-join-cta" href="contratos.html">' +
+            '<span class="op-ul">Quero ser operador</span>' +
+            '<span class="op-arrow" aria-hidden="true">&rarr;</span>' +
+          '</a>' +
+        '</article>');
+
+      grid.innerHTML = cards.join('');
+    }
+  })();
+</script>
+</body>
+</html>

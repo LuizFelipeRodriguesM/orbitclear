@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrbitClear · Marketplace de remoção orbital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  /* ============================================================
+     OrbitClear — LANDING FINAL (fusão A·BENTO + B·KINETIC EDITORIAL)
+     Um só sistema visual Awesomic: DM Sans, paleta estrita por token,
+     profundidade por degrau de cor (sem drop shadow em tile),
+     ember/orchid escassos. Prefixo .ed- pra não colidir com base.css.
+     Ritmo: claro (hero) → faixa → bento → número cru → escuro Kessler
+            → impacto Terra → CTA escuro.
+     ============================================================ */
+
+  /* gutter editorial largo: mesmo eixo do .container, sem cartão */
+  .ed-bleed { padding-inline: clamp(20px, 5.5vw, 96px); }
+  .ed-rule { border-top: 1px solid var(--color-pebble); }
+
+  .ed-kicker {
+    font-size: var(--text-caption);
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-steel);
+  }
+  .ed-secnum {
+    display: inline-block;
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: .14em;
+    color: var(--color-steel);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ============================================================
+     1 · HERO — big-type arquitetônico (canvas claro / mist)
+     ============================================================ */
+  .ed-hero {
+    padding-top: clamp(44px, 9vw, 124px);
+    padding-bottom: clamp(36px, 6vw, 80px);
+  }
+  .ed-hero-top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px; margin-bottom: clamp(26px, 5vw, 60px); flex-wrap: wrap;
+  }
+  .ed-hero-top .ed-loc {
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-steel);
+    font-variant-numeric: tabular-nums;
+  }
+  .ed-display {
+    margin: 0;
+    font-family: 'Bricolage Grotesque', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(34px, 5vw, 74px);
+    line-height: 1.0;
+    letter-spacing: -.025em;
+    color: var(--color-obsidian);
+    overflow-wrap: break-word;
+  }
+  .ed-display .ed-line { display: block; }
+  /* última palavra em ember — único acento cromático da dobra */
+  .ed-display .ed-accent { color: var(--color-ember); }
+
+  /* hero em 2 colunas: tipografia à esquerda, mídia cinematográfica à direita */
+  .ed-hero-main {
+    margin-top: clamp(24px, 3.5vw, 48px);
+    display: grid;
+    grid-template-columns: 1.06fr 0.94fr;
+    gap: clamp(28px, 4vw, 64px);
+    align-items: stretch;
+  }
+  .ed-hero-left { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .ed-hero-foot { margin-top: clamp(26px, 3.5vw, 44px); max-width: 46ch; }
+  .ed-hero-lead {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-ink);
+  }
+  .ed-hero-lead strong { font-weight: var(--font-weight-semibold); }
+  .ed-hero-cta {
+    margin-top: clamp(18px, 2vw, 26px);
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-medium);
+    align-self: start;
+  }
+  .ed-hero-cta .ed-ul { border-bottom: 1px solid var(--color-obsidian); padding-bottom: 3px; }
+  .ed-hero-cta .ed-arrow {
+    display: inline-block;
+    transition: transform .28s cubic-bezier(.175,.885,.32,1.275);
+  }
+  .ed-hero-cta:hover .ed-arrow { transform: translateX(8px); }
+
+  /* mídia cinematográfica do hero (imagem gerada) */
+  .ed-hero-media {
+    position: relative;
+    margin: 0;
+    border-radius: clamp(28px, 2.4vw, 36px);
+    overflow: hidden;
+    background: var(--surface-dark);
+    min-height: 440px;
+    isolation: isolate;
+  }
+  .ed-hero-media img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  .ed-hero-media figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: clamp(16px, 1.8vw, 24px);
+    display: flex; align-items: center; gap: 9px;
+    font-size: var(--text-caption);
+    letter-spacing: .14em; text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+    color: rgba(255,255,255,.88);
+    background: linear-gradient(to top, rgba(9,9,11,.74), transparent);
+  }
+  .ed-hero-media .ed-live {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--color-ember); flex: none;
+    box-shadow: 0 0 0 4px rgba(255,90,0,.18);
+  }
+  @media (max-width: 860px) {
+    .ed-hero-main { grid-template-columns: 1fr; gap: clamp(24px, 5vw, 36px); }
+    .ed-hero-media { min-height: 0; aspect-ratio: 16 / 11; }
+  }
+
+  /* ============================================================
+     2 · MARQUEE cinético — palavras-chave cruzando a tela
+     ============================================================ */
+  .ed-marquee {
+    padding-block: clamp(16px, 2.6vw, 28px);
+    overflow: hidden;
+    border-top: 1px solid var(--color-graphite);
+    border-bottom: 1px solid var(--color-graphite);
+    user-select: none;
+  }
+  .ed-marquee-track {
+    display: flex; width: max-content;
+    will-change: transform;
+    animation: ed-marquee-x 34s linear infinite;
+  }
+  .ed-marquee:hover .ed-marquee-track { animation-play-state: paused; }
+  .ed-marquee-item {
+    display: inline-flex; align-items: center;
+    font-size: clamp(22px, 4vw, 48px);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -.02em;
+    text-transform: uppercase;
+    color: var(--color-ash);
+    padding-inline: clamp(20px, 3vw, 48px);
+    transition: color .25s ease;
+  }
+  .ed-marquee-item .ed-sep { color: var(--color-ember); margin-left: clamp(20px, 3vw, 48px); }
+  .ed-marquee-item:hover { color: var(--color-obsidian); }
+  @keyframes ed-marquee-x { to { transform: translateX(-50%); } }
+
+  /* ============================================================
+     3 · BENTO "ACTIVE GRID" — mosaico assimétrico (de A)
+     ============================================================ */
+  .ed-stage { padding-block: clamp(24px, 4vw, 56px); }
+  .ed-bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(96px, 1fr);
+    gap: clamp(10px, 1vw, 16px);
+  }
+  .ed-tile {
+    position: relative;
+    border-radius: clamp(28px, 2.4vw, 36px);
+    padding: clamp(20px, 2vw, 30px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    isolation: isolate;
+    transition: transform .25s cubic-bezier(.175,.885,.32,1.275);
+    will-change: transform;
+  }
+  .ed-tile:hover { transform: translateY(-4px); }
+  .ed-tile.ed-static:hover { transform: none; }
+  .ed-tile .ed-kicker { color: var(--color-steel); }
+
+  /* placement desktop — assimetria intencional */
+  .ed-t-orbit   { grid-column: span 5; grid-row: span 4; }
+  .ed-t-catalog { grid-column: span 7; grid-row: span 4; }
+  .ed-t-stat-a  { grid-column: span 3; grid-row: span 2; }
+  .ed-t-stat-b  { grid-column: span 3; grid-row: span 2; }
+  .ed-t-orchid  { grid-column: span 3; grid-row: span 2; }
+  .ed-t-ecosys  { grid-column: span 3; grid-row: span 2; }
+
+  /* --- TILE ÓRBITA (escuro, grande): globo de pontos em <canvas>, ver js/globo.js --- */
+  .ed-t-orbit {
+    background: var(--surface-dark);
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    min-height: 360px;
+  }
+  .ed-t-orbit::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(70% 60% at 50% 46%, rgba(255,255,255,.06), transparent 70%);
+    z-index: -1;
+  }
+  .ed-orbit-canvas {
+    width: min(108%, 460px); aspect-ratio: 1 / 1; display: block;
+    cursor: grab; touch-action: pan-y;
+  }
+  .ed-orbit-canvas:active { cursor: grabbing; }
+  .ed-orbit-label {
+    position: absolute;
+    left: clamp(22px, 2vw, 32px);
+    bottom: clamp(22px, 2vw, 32px);
+    z-index: 2;
+    color: var(--color-ash);
+    max-width: 64%;
+  }
+  .ed-orbit-label .ed-kicker { color: var(--color-ash); }
+  .ed-orbit-label .ed-big {
+    display: block;
+    color: var(--color-snow);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-body-lg);
+    margin-top: 4px;
+    letter-spacing: -.01em;
+  }
+  /* o globo do tile de órbita é desenhado em <canvas> — ver js/globo.js
+     (respeito a prefers-reduced-motion fica no próprio JS) */
+
+  /* --- TILE CATÁLOGO (snow, active grid: revela 3º no hover) --- */
+  .ed-t-catalog {
+    background: var(--surface-card-white);
+    gap: var(--spacing-16);
+    justify-content: flex-start;
+  }
+  .ed-catalog-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--spacing-16);
+  }
+  .ed-see-all {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-obsidian);
+    transition: opacity .2s ease;
+  }
+  .ed-see-all:hover { opacity: .55; }
+  .ed-see-all svg { width: 14px; height: 14px; transition: transform .25s ease; }
+  .ed-t-catalog:hover .ed-see-all svg { transform: translateX(3px); }
+  .ed-obj-list { display: grid; gap: 10px; margin-top: auto; }
+  .ed-obj-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--spacing-16);
+    padding: 13px 16px;
+    border-radius: var(--radius-2xl);
+    background: var(--surface-canvas);
+  }
+  .ed-obj-name {
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ed-obj-meta {
+    display: block;
+    font-size: var(--text-caption);
+    line-height: 1.7;
+    color: var(--color-steel);
+    font-weight: var(--font-weight-regular);
+  }
+  .ed-risk {
+    flex: none;
+    font-size: var(--text-caption);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-pebble);
+    color: var(--color-slate);
+    white-space: nowrap;
+  }
+  .ed-risk[data-risk="CRITICO"] { color: var(--color-ember); border-color: rgba(255,90,0,.32); }
+  /* o objeto extra colapsado, abre no hover (active grid, overshoot) */
+  .ed-obj-row.ed-reveal {
+    max-height: 0; opacity: 0; padding-block: 0; margin-top: -10px;
+    transform: translateY(-6px); overflow: hidden;
+    transition: max-height .32s cubic-bezier(.175,.885,.32,1.275),
+                opacity .28s ease, transform .3s ease, padding .3s ease, margin .3s ease;
+  }
+  .ed-t-catalog:hover .ed-obj-row.ed-reveal {
+    max-height: 72px; opacity: 1; padding-block: 13px; margin-top: 0; transform: translateY(0);
+  }
+
+  /* --- TILE STAT --- */
+  .ed-t-stat { justify-content: space-between; gap: var(--spacing-12); min-height: 168px; }
+  .ed-t-stat-a { background: var(--surface-card-white); }
+  .ed-t-stat-b { background: var(--surface-card-muted); }
+  .ed-stat-num {
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(40px, 4.6vw, 58px);
+    line-height: .9;
+    letter-spacing: -.035em;
+    color: var(--color-obsidian);
+  }
+  .ed-stat-num .ed-u {
+    font-size: .42em;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: -.01em;
+    color: var(--color-slate);
+  }
+  .ed-stat-label {
+    font-size: var(--text-body);
+    color: var(--color-steel);
+    line-height: 1.35;
+    max-width: 24ch;
+  }
+
+  /* --- TILE SISTEMA (âncora escura — sem cor cromática) --- */
+  .ed-t-orchid {
+    background: var(--surface-dark);
+    color: var(--color-snow);
+    justify-content: space-between;
+    gap: var(--spacing-12);
+    min-height: 168px;
+  }
+  .ed-t-orchid .ed-kicker { color: rgba(255,255,255,.72); }
+  .ed-orchid-line {
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(22px, 2.4vw, 30px);
+    line-height: 1.04;
+    letter-spacing: -.02em;
+  }
+  .ed-orchid-line span { display: block; font-weight: var(--font-weight-light); }
+
+  /* --- TILE ECOSSISTEMA (marquee de agências/operadores) --- */
+  .ed-t-ecosys {
+    background: var(--surface-card-muted);
+    justify-content: space-between;
+    gap: var(--spacing-16);
+    min-height: 168px;
+  }
+  .ed-ticker {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .ed-ticker-track {
+    display: flex; align-items: center;
+    gap: clamp(20px, 2.4vw, 38px);
+    width: max-content;
+    animation: ed-tick 30s linear infinite;
+  }
+  @keyframes ed-tick { to { transform: translateX(-50%); } }
+  .ed-ticker-track span {
+    font-size: var(--text-subheading);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-slate);
+    white-space: nowrap;
+  }
+  .ed-ticker-track .ed-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-ash); flex: none; }
+  .ed-ecosys-foot {
+    display: flex; align-items: center;
+    color: var(--color-steel);
+    font-size: var(--text-body);
+  }
+  .ed-ecosys-foot b { color: var(--color-ink); font-weight: var(--font-weight-semibold); }
+
+  /* ============================================================
+     4 · KESSLER — bloco escuro forte (.card-dark de base)
+     ============================================================ */
+  .ed-section { padding-block: clamp(56px, 8vw, 104px); }
+  .ed-dark-block {
+    background: var(--surface-dark);
+    color: var(--color-snow);
+    border-radius: clamp(30px, 3vw, 44px);
+    padding: clamp(32px, 5vw, 72px);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .ed-dark-block::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 120% at 88% 4%, rgba(255,90,0,.10), transparent 46%);
+    z-index: -1;
+  }
+  .ed-dark-block .ed-kicker { color: var(--color-ash); }
+  .ed-kessler-title {
+    margin: clamp(12px, 1.4vw, 18px) 0 0;
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(30px, 5vw, 56px);
+    line-height: 1.0;
+    letter-spacing: -.03em;
+    color: var(--color-snow);
+  }
+  .ed-kessler-title .ed-thin { font-weight: var(--font-weight-light); color: var(--color-ash); }
+  .ed-problem {
+    margin-top: clamp(28px, 4vw, 48px);
+    display: grid; gap: var(--spacing-16);
+  }
+  .ed-problem-row {
+    display: flex; align-items: flex-start; gap: var(--spacing-16);
+    font-size: clamp(18px, 2.4vw, 26px);
+    line-height: 1.34;
+    padding-top: clamp(16px, 2vw, 22px);
+    border-top: 1px solid rgba(255,255,255,.12);
+  }
+  .ed-problem-row .ed-no {
+    flex: none;
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-ash);
+    font-variant-numeric: tabular-nums;
+    padding-top: .35em;
+  }
+  .ed-problem-lead { color: var(--color-ash); font-weight: var(--font-weight-light); }
+  .ed-problem-key { color: var(--color-snow); font-weight: var(--font-weight-semibold); }
+
+  /* ============================================================
+     6 · IMPACTO NA TERRA — lista-índice editorial (de B)
+     ============================================================ */
+  .ed-head { margin-bottom: clamp(10px, 1.6vw, 18px); }
+  .ed-head .ed-title {
+    margin: 0;
+    font-size: clamp(36px, 6vw, 84px);
+    line-height: 1.02;
+    letter-spacing: -.035em;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-obsidian);
+  }
+  .ed-head .ed-title .ed-thin { display: block; font-weight: var(--font-weight-light); color: var(--color-slate); }
+  .ed-impact-list {
+    margin-top: clamp(20px, 3vw, 36px);
+    list-style: none; padding: 0;
+  }
+  .ed-impact-list li {
+    display: grid;
+    grid-template-columns: minmax(220px, 4fr) 6fr;
+    gap: clamp(20px, 4vw, 64px);
+    align-items: baseline;
+    padding-block: clamp(18px, 2.2vw, 28px);
+    border-top: 1px solid var(--color-pebble);
+    transition: padding-left .3s cubic-bezier(.175,.885,.32,1.275);
+  }
+  .ed-impact-list li:last-child { border-bottom: 1px solid var(--color-pebble); }
+  .ed-impact-list li:hover { padding-left: clamp(8px, 1.2vw, 20px); }
+  .ed-impact-list .ed-ix {
+    margin: 0;
+    font-size: clamp(20px, 2.2vw, 28px);
+    line-height: 1.2;
+    letter-spacing: -.03em;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-obsidian);
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  .ed-impact-list .ed-ix .ed-no {
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-steel);
+    font-variant-numeric: tabular-nums;
+    flex: none;
+  }
+  .ed-impact-list .ed-desc {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-steel);
+    max-width: 46ch;
+  }
+  @media (max-width: 720px) {
+    .ed-impact-list li { grid-template-columns: 1fr; gap: 12px; }
+  }
+
+  /* ============================================================
+     7 · CTA final — .card-dark centralizado
+     ============================================================ */
+  .ed-cta {
+    position: relative; overflow: hidden;
+    background: var(--surface-dark);
+    color: var(--color-snow);
+    border-radius: clamp(30px, 3vw, 44px);
+    padding: clamp(44px, 6vw, 96px) clamp(28px, 4vw, 64px);
+    text-align: center;
+    isolation: isolate;
+  }
+  .ed-cta::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(100% 120% at 50% -20%, rgba(255,90,0,.12), transparent 50%),
+      radial-gradient(80% 100% at 50% 130%, rgba(255,255,255,.05), transparent 55%);
+    z-index: -1;
+  }
+  .ed-cta .ed-kicker { color: var(--color-ash); }
+  .ed-cta-title {
+    margin: clamp(12px, 1.4vw, 18px) auto 0;
+    font-weight: var(--font-weight-bold);
+    font-size: clamp(32px, 5vw, 64px);
+    line-height: 1.02;
+    letter-spacing: -.03em;
+    max-width: 16ch;
+  }
+  .ed-cta-title .ed-thin { color: var(--color-ash); font-weight: var(--font-weight-light); }
+  .ed-cta-sub {
+    margin: clamp(18px, 2.4vw, 28px) auto 0;
+    color: var(--color-pebble);
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    max-width: 46ch;
+  }
+  .ed-btn-snow {
+    margin-top: clamp(28px, 3vw, 38px);
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--color-snow);
+    color: var(--color-obsidian);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-body-lg);
+    border-radius: var(--radius-pill);
+    padding: 14px 26px;
+    transition: transform .22s ease;
+  }
+  .ed-btn-snow:hover { transform: translateY(-2px); }
+  .ed-btn-snow svg { width: 17px; height: 17px; }
+
+  /* ============================================================
+     RESPONSIVO — o bento colapsa progressivamente
+     ============================================================ */
+  @media (max-width: 1080px) {
+    .ed-bento { grid-auto-rows: minmax(92px, auto); }
+    .ed-t-orbit   { grid-column: span 6; grid-row: span 3; }
+    .ed-t-catalog { grid-column: span 6; grid-row: span 3; }
+    .ed-t-stat-a  { grid-column: span 6; grid-row: span 2; }
+    .ed-t-stat-b  { grid-column: span 6; grid-row: span 2; }
+    .ed-t-orchid  { grid-column: span 6; grid-row: span 2; }
+    .ed-t-ecosys  { grid-column: span 6; grid-row: span 2; }
+  }
+  @media (max-width: 640px) {
+    .ed-bento { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 12px; }
+    .ed-tile { grid-column: 1 / -1 !important; grid-row: auto !important; }
+    .ed-t-orbit { min-height: 300px; }
+    /* em touch não há hover: o objeto extra aparece fixo */
+    .ed-obj-row.ed-reveal {
+      max-height: 72px; opacity: 1; padding-block: 13px; margin-top: 0; transform: none;
+    }
+  }
+
+  /* ============================================================
+     MOTION RESET — zera marquee / órbita / hovers
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .ed-marquee-track, .ed-ticker-track { animation: none; transform: none; }
+    .ed-tile, .ed-btn-snow, .ed-see-all svg, .ed-obj-row.ed-reveal,
+    .ed-hero-cta .ed-arrow, .ed-impact-list li, .ed-marquee-item { transition: none; }
+    .ed-tile:hover, .ed-hero-cta:hover .ed-arrow { transform: none; }
+    .ed-impact-list li:hover { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+<header class="nav"><div class="container nav-inner"><a href="index.html" class="brand"><span class="brand-dot"></span>OrbitClear</a><nav class="nav-links"><a href="objetos.html" class="nav-link">Objetos</a><a href="operadores.html" class="nav-link">Operadores</a><a href="contratos.html" class="nav-link">Contratos</a><a href="contratos.html" class="btn btn-primary">Agendar remoção</a></nav></div></header>
+
+<main>
+
+  <!-- ===================== 1 · HERO big-type ===================== -->
+  <section class="ed-hero ed-bleed" aria-labelledby="hero-h">
+    <div class="ed-hero-top">
+      <span class="ed-kicker">Marketplace de remoção orbital — simulação</span>
+      <span class="ed-loc">LEO · 740–1450 km · 28.000 km/h</span>
+    </div>
+
+    <div class="ed-hero-main">
+      <div class="ed-hero-left">
+        <h1 class="ed-display" id="hero-h">
+          <span class="ed-line">Cada detrito</span>
+          <span class="ed-line">em órbita ameaça</span>
+          <span class="ed-line">a <span class="ed-accent">Terra.</span></span>
+        </h1>
+        <div class="ed-hero-foot">
+          <p class="ed-hero-lead">
+            A órbita baixa virou um depósito de satélites mortos e fragmentos. O
+            <strong>OrbitClear</strong> conecta quem precisa remover a quem sabe capturar —
+            compare operadores e agende a janela de desórbita <strong>antes que a cascata comece.</strong>
+          </p>
+          <a href="objetos.html" class="ed-hero-cta">
+            <span class="ed-ul">Explorar o catálogo</span>
+            <span class="ed-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <figure class="ed-hero-media">
+        <img src="assets/hero.jpg" width="896" height="1200" loading="eager"
+             alt="Detritos orbitais e um satélite desativado à deriva sobre a Terra, com um fragmento crítico em destaque">
+        <figcaption><span class="ed-live" aria-hidden="true"></span>Órbita baixa · campo de detritos rastreado</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== 2 · MARQUEE cinético ===================== -->
+  <div class="ed-marquee" aria-hidden="true">
+    <div class="ed-marquee-track" id="ed-marquee-track"><!-- preenchido por JS (loop perfeito) --></div>
+  </div>
+
+  <!-- ===================== 3 · BENTO ACTIVE GRID ===================== -->
+  <section class="ed-stage ed-bleed" aria-label="O marketplace em um relance">
+    <div class="ed-bento">
+
+      <!-- TILE ÓRBITA (escuro, grande) -->
+      <article class="ed-tile ed-t-orbit ed-static" aria-label="Detritos orbitando a Terra">
+        <canvas id="ed-orbit-canvas" class="ed-orbit-canvas" role="img"
+                aria-label="Globo da Terra pontilhado girando, com focos de lançamento de detritos em destaque"></canvas>
+        <span class="ed-orbit-label">
+          <span class="ed-kicker">Órbita baixa · 740–1450 km</span>
+          <span class="ed-big">1 fragmento crítico em rota</span>
+        </span>
+      </article>
+
+      <!-- TILE CATÁLOGO (active grid: revela 3º no hover) -->
+      <article class="ed-tile ed-t-catalog">
+        <div class="ed-catalog-head">
+          <span class="ed-kicker">No catálogo agora</span>
+          <a href="objetos.html" class="ed-see-all">
+            Ver todos
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="ed-obj-list" id="ed-obj-list"><!-- preenchido via JS --></div>
+      </article>
+
+      <!-- TILE STAT A — 130M+ (resumo; o dado cru vem na faixa 4) -->
+      <article class="ed-tile ed-t-stat ed-t-stat-a">
+        <span class="ed-kicker">Catálogo global</span>
+        <div class="ed-stat-num">130M<span class="ed-u">+</span></div>
+        <p class="ed-stat-label">fragmentos rastreados em órbita da Terra</p>
+      </article>
+
+      <!-- TILE STAT B — 28.000 km/h -->
+      <article class="ed-tile ed-t-stat ed-t-stat-b">
+        <span class="ed-kicker">Velocidade de impacto</span>
+        <div class="ed-stat-num">28.000<span class="ed-u"> km/h</span></div>
+        <p class="ed-stat-label">energia suficiente para destruir um satélite ativo</p>
+      </article>
+
+      <!-- TILE ORCHID (wash decorativo único, sem botão) -->
+      <article class="ed-tile ed-t-orchid">
+        <span class="ed-kicker">O sistema</span>
+        <p class="ed-orchid-line">4 entidades.<span>1 marketplace.</span></p>
+      </article>
+
+      <!-- TILE ECOSSISTEMA -->
+      <article class="ed-tile ed-t-ecosys ed-static">
+        <span class="ed-kicker">No ecossistema</span>
+        <div class="ed-ticker">
+          <div class="ed-ticker-track" id="ed-ticker"><!-- preenchido via JS --></div>
+        </div>
+        <p class="ed-ecosys-foot"><b id="ed-ag-count">3</b>&nbsp;agências&nbsp;·&nbsp;<b id="ed-op-count">5</b>&nbsp;operadores conectados</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== 4 · KESSLER (bloco escuro) ===================== -->
+  <section class="ed-section ed-bleed" aria-labelledby="kessler-h">
+    <div class="ed-dark-block">
+      <span class="ed-kicker">01 — O risco</span>
+      <h2 class="ed-kessler-title" id="kessler-h">A síndrome <span class="ed-thin">de Kessler</span></h2>
+      <div class="ed-problem">
+        <p class="ed-problem-row"><span class="ed-no">01</span><span><span class="ed-problem-lead">Uma única colisão gera </span><span class="ed-problem-key">milhares de novos fragmentos.</span></span></p>
+        <p class="ed-problem-row"><span class="ed-no">02</span><span><span class="ed-problem-lead">Cada fragmento vira </span><span class="ed-problem-key">uma nova ameaça em cascata.</span></span></p>
+        <p class="ed-problem-row"><span class="ed-no">03</span><span><span class="ed-problem-lead">Sem remoção, faixas inteiras de órbita ficam </span><span class="ed-problem-key">inutilizáveis por décadas.</span></span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 6 · IMPACTO NA TERRA (diferencial) ===================== -->
+  <section class="ed-section ed-bleed" aria-labelledby="impact-h">
+    <div class="ed-head">
+      <h2 class="ed-title" id="impact-h">Não é problema do espaço. <span class="ed-thin">É da Terra.</span></h2>
+    </div>
+
+    <ol class="ed-impact-list">
+      <li>
+        <p class="ed-ix"><span class="ed-no">01</span> GPS &amp; navegação</p>
+        <p class="ed-desc">Carros, aviões e toda a logística dependem das constelações de posicionamento que os detritos ameaçam todos os dias.</p>
+      </li>
+      <li>
+        <p class="ed-ix"><span class="ed-no">02</span> Meteorologia &amp; clima</p>
+        <p class="ed-desc">Satélites de observação alimentam a previsão do tempo e o monitoramento climático do planeta inteiro.</p>
+      </li>
+      <li>
+        <p class="ed-ix"><span class="ed-no">03</span> Comunicações</p>
+        <p class="ed-desc">TV, telefonia e banda larga via satélite ficam vulneráveis a interrupções de sinal e blecautes de dados.</p>
+      </li>
+      <li>
+        <p class="ed-ix"><span class="ed-no">04</span> Agro por satélite</p>
+        <p class="ed-desc">A imagem orbital guia plantio, irrigação e safra — a espinha dorsal do agronegócio moderno.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ===================== 7 · CTA final ===================== -->
+  <section class="ed-section ed-bleed" style="padding-top:0">
+    <div class="ed-cta">
+      <span class="ed-kicker">Comece agora</span>
+      <h2 class="ed-cta-title">Pronto para limpar <span class="ed-thin">sua órbita?</span></h2>
+      <p class="ed-cta-sub">Explore o catálogo de detritos, escolha um operador de captura e agende a primeira janela de desórbita. Sem deixar nenhum fragmento para trás.</p>
+      <a href="contratos.html" class="ed-btn-snow">
+        Agendar remoção
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer container"><span>OrbitClear · Marketplace de remoção de lixo espacial</span><span class="muted">Global Solution 2026/1 · FIAP Eng. de Software · Grupo 89</span></footer>
+
+<script src="js/data.js"></script>
+<script src="js/globo.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    /* ---- 2 · Marquee cinético (palavras-chave, 2 cópias = loop perfeito) ---- */
+    var palavras = ['DETRITOS', 'KESSLER', 'GPS', 'CLIMA', 'COMUNICAÇÕES', 'AGRO'];
+    var track = document.getElementById('ed-marquee-track');
+    if (track) {
+      var buildSet = function () {
+        var frag = document.createDocumentFragment();
+        palavras.forEach(function (p) {
+          var span = document.createElement('span');
+          span.className = 'ed-marquee-item';
+          span.innerHTML = p + '<span class="ed-sep">/</span>';
+          frag.appendChild(span);
+        });
+        return frag;
+      };
+      track.appendChild(buildSet());
+      track.appendChild(buildSet());
+    }
+
+    /* ---- 3 · Catálogo: 2 objetos visíveis + 1 que revela no hover (active grid) ---- */
+    var list = document.getElementById('ed-obj-list');
+    if (list && Array.isArray(window.OBJETOS)) {
+      var ordemRisco = { CRITICO: 0, ALTO: 1, MEDIO: 2, BAIXO: 3 };
+      var top = window.OBJETOS.slice().sort(function (a, b) {
+        return (ordemRisco[a.nivelRiscoColisao] || 9) - (ordemRisco[b.nivelRiscoColisao] || 9);
+      }).slice(0, 3);
+
+      var L = window.LABELS || {};
+      list.innerHTML = top.map(function (o, i) {
+        var tipo = (L.tipo && L.tipo[o.tipo]) || o.tipo;
+        var risco = (L.risco && L.risco[o.nivelRiscoColisao]) || o.nivelRiscoColisao;
+        var alt = window.fmtKm ? window.fmtKm(o.altitudeKm) : (o.altitudeKm + ' km');
+        return '<div class="ed-obj-row' + (i === 2 ? ' ed-reveal' : '') + '">' +
+                 '<span class="ed-obj-name">' + o.nome +
+                   '<span class="ed-obj-meta">' + tipo + ' · ' + alt + '</span>' +
+                 '</span>' +
+                 '<span class="ed-risk" data-risk="' + o.nivelRiscoColisao + '">' + risco + '</span>' +
+               '</div>';
+      }).join('');
+    }
+
+    /* ---- 3 · Ticker do ecossistema: agências + operadores reais (2x p/ loop) ---- */
+    var ticker = document.getElementById('ed-ticker');
+    if (ticker) {
+      var nomes = []
+        .concat((window.CLIENTES || []).map(function (c) { return c.nomeAgencia; }))
+        .concat((window.OPERADORES || []).map(function (o) { return o.nomeEmpresa; }));
+      if (!nomes.length) nomes = ['NASA', 'ESA', 'INPE', 'ClearSpace', 'Astroscale', 'D-Orbit'];
+      var seq = nomes.concat(nomes);
+      ticker.innerHTML = seq.map(function (n, i) {
+        return '<span>' + n + '</span>' + (i < seq.length - 1 ? '<span class="ed-dot" aria-hidden="true"></span>' : '');
+      }).join('');
+    }
+
+    /* ---- contadores reais no rodapé do tile de ecossistema ---- */
+    var ag = document.getElementById('ed-ag-count');
+    var op = document.getElementById('ed-op-count');
+    if (ag && window.CLIENTES) ag.textContent = window.CLIENTES.length;
+    if (op && window.OPERADORES) op.textContent = window.OPERADORES.length;
+  })();
+</script>
+
+</body>
+</html>
